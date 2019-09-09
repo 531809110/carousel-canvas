@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #container {
+            position: relative;
+            border: 1px solid #f00;
+            display: flex;
+            justify-content: center;
+            width: 1000px;
+            height: 312.5px;
+        }
+
+        #c3 {
+            position: absolute;
+            /* left:50%; */
+        }
+
+
+        .left_right {
+            position: absolute;
+            display: flex;
+            width: 1000px;
+            height: 312.5px;
+            justify-content: space-between;
+            align-items: center;
+            /* 
+            left:50%; */
+        }
+
+        .director {
+            position: absolute;
+            bottom: 15px;
+        }
+
+        .director .dot {
+            display: flex;
+            list-style: none;
+        }
+
+        .director .dot li {
+            border: 5px solid #fff;
+            border-radius: 50%;
+        }
+
+        .director .dot li+li {
+            margin-left: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container">
+        <canvas id="c3" width=1000 height=312.5></canvas>
+        <div id="d3" class="left_right">
+            <img id="left" src="image/carousel_item/left_ar.png" alt="">
+            <img id="right" src="image/carousel_item/right_ar.png" alt="">
+        </div>
+        <div class="director">
+            <ul class="dot">
+                <li id="l1" style="border-color: brown" data-key=0></li>
+                <li id="l2" data-key=1></li>
+                <li id="l3" data-key=2></li>
+                <li id="l4" data-key=3></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var container = document.getElementById("container");
+        var c3 = document.getElementById("c3");
+        var d3 = document.getElementById("d3");
+        var ctx = c3.getContext("2d");
+        var img1 = new Image();
+        img1.src = "image/carousel_item/carousel-1.jpg";
+        var img2 = new Image();
+        img2.src = "image/carousel_item/carousel-2.jpg";
+        var img3 = new Image();
+        img3.src = "image/carousel_item/carousel-3.jpg";
+        var img4 = new Image();
+        img4.src = "image/carousel_item/carousel-4.jpg";
+        var x = 0;
+        var y = 0;
+        var w = 1000;
+        var h = 312.5;
+
+        var show = function () {
+            ctx.drawImage(img1, x, y, w, h);
+            ctx.clearRect(0, 0, 1000, 312.5);
+            ctx.drawImage(img1, x, y, w, h);
+            ctx.drawImage(img2, x + 1000, y, w, h);
+            ctx.drawImage(img3, x + 2000, y, w, h);
+            ctx.drawImage(img4, x + 3000, y, w, h);
+            ctx.drawImage(img1, x + 4000, y, w, h);
+            if (x <= 0 && x > -1000 || x <= -4000) {
+            l1.style.borderColor = "brown"
+            l2.style.borderColor = ""
+            l3.style.borderColor = ""
+            l4.style.borderColor = ""
+        } else if (x <= -1000 && x > -2002) {
+            l1.style.borderColor = ""
+            l2.style.borderColor = "brown"
+            l3.style.borderColor = ""
+            l4.style.borderColor = ""
+        } else if (x <= -2000 && x > -3000) {
+            l1.style.borderColor = ""
+            l2.style.borderColor = ""
+            l3.style.borderColor = "brown"
+            l4.style.borderColor = ""
+        } else if (x <= -3000 && x > -4000) {
+            l1.style.borderColor = ""
+            l2.style.borderColor = ""
+            l3.style.borderColor = ""
+            l4.style.borderColor = "brown"
+        }
+        }
+        var move = function () {
+            if (x == 0 || x == -1002 || x == -2002 || x == -3002) {
+                // ctx.clearRect(0, 0, 1000, 312.5);
+                ctx.drawImage(img1, x, y, w, h);
+                setTimeout(function () {
+                    show();
+                    x -= 2;
+                }, 2000)
+            } else if (x < -4000) {
+                x = 0;
+            } else {
+
+                show();
+                x -= 2;
+                // console.log(x)
+            }
+        };
+        var timer = setInterval(move, 20)
+        d3.onmouseenter = function () {
+            clearInterval(timer)
+        };
+        d3.onmouseleave = function () {
+            timer = setInterval(move, 20)
+        }
+
+        container.onclick = function (e) {
+            var i;
+            i = parseInt(x / (-1000));
+            if (e.target.nodeName == "IMG") {
+
+                if (e.target.id == "left") {
+                    if (x > -1000) {
+                        i = 4
+                    }
+                    // console.log(i)
+                    x = (i - 1) * (-1000);
+                    show();
+                } else if (e.target.id == "right") {
+                    if (x < -3000) {
+                        i = -1
+                    }
+                    x = (i + 1) * (-1000);
+                    show();
+                }
+
+            } else if (e.target.nodeName == "LI") {
+                var l1 = document.getElementById("l1");
+                var l2 = document.getElementById("l2");
+                var l3 = document.getElementById("l3");
+                var l4 = document.getElementById("l4");
+                console.log(e.target)
+                if (e.target == l1) {
+                    // console.log(111)
+                    x = 0;
+                    show();
+
+                } else if (e.target == l2) {
+                    x = -1000;
+                    show();
+                    
+                } else if (e.target == l3) {
+                    x = -2000;
+                    show();
+                    
+                } else if (e.target == l4) {
+                    x = -3000;
+                    show();
+                    
+                }
+
+            }
+        }
+        var color=function(){
+        if (x <= 0 && x > -1000) {
+            l1.style.borderColor = "brown"
+            l2.style.borderColor = ""
+            l3.style.borderColor = ""
+            l4.style.borderColor = ""
+        } else if (x <= -1000 && x > -2000) {
+            l1.style.borderColor = ""
+            l2.style.borderColor = "brown"
+            l3.style.borderColor = ""
+            l4.style.borderColor = ""
+        } else if (x <= -2000 && x > -3000) {
+            l1.style.borderColor = ""
+            l2.style.borderColor = ""
+            l3.style.borderColor = "brown"
+            l4.style.borderColor = ""
+        } else if (x <= -3000 && x > -4000) {
+            l1.style.borderColor = ""
+            l2.style.borderColor = ""
+            l3.style.borderColor = ""
+            l4.style.borderColor = "brown"
+        }
+    }
+    </script>
+</body>
+
+</html>
